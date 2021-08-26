@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store    from '../store'
 import Home     from '../views/Home.vue'
+import Detail   from '../views/Detail.vue'
 import About    from '../views/About.vue'
 import Profile  from '../views/Profile.vue'
+import Add      from '../views/Add.vue'
 import Login    from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Logout   from '../views/Logout.vue'
@@ -14,6 +16,11 @@ const routes = [
     component: Home
   },
   {
+    path: '/article/:slug',
+    name: 'Detail',
+    component: Detail
+  },
+  {
     path: '/about',
     name: 'About',
     component: About
@@ -22,6 +29,12 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: Profile,
+    meta: { loginRequired: true }
+  },
+  {
+    path: '/add',
+    name: 'Add',
+    component: Add,
     meta: { loginRequired: true }
   },
   {
