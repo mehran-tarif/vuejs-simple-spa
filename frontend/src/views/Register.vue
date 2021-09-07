@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Register',
   data() {
@@ -89,26 +91,26 @@ export default {
         this.usernameEM = ''
       }
 
-      if (this.password.length < 6) {
+      if (this.password.length < 8) {
         access = false
         this.passwordE = true
         if (this.password.length == 0) {
           this.passwordEM = "Password required."
         } else {
-          this.passwordEM = "Password must be at least 6 characters long."
+          this.passwordEM = "Password must be at least 8 characters long."
         }
       } else {
         this.passwordE = false
         this.passwordEM = ''
       }
 
-      if (this.password2.length < 6) {
+      if (this.password2.length < 8) {
         access = false
         this.password2E = true
         if (this.password2.length == 0) {
           this.password2EM = "Repeat password required."
         } else {
-          this.password2EM = "Repeat password must be at least 6 characters long."
+          this.password2EM = "Repeat password must be at least 8 characters long."
         }
       } else {
         this.password2E = false
@@ -127,8 +129,26 @@ export default {
       }
       
       if (access) {
-        this.$store.commit("login", `${this.username}:${this.password}`)
-        this.$router.push("/profile")
+        axios
+          .post('/api/auth/users/', {
+            username: this.username,
+            password: this.password
+          })
+          .then(response => {
+            console.log(response)
+            this.$router.push("/login")
+          })
+          .catch(error => {
+            console.log(error.response.data)
+            if (error.response.data.username) {
+              this.usernameE = true
+              this.usernameEM = error.response.data.username.join(" ")
+            } else if (error.response.data.password) {
+              this.passwordE = true
+              this.password2E = true
+              this.passwordEM = error.response.data.password.join(" ")
+            }
+          })
       }
     }
   }

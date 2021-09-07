@@ -1,11 +1,31 @@
 <template>
   <div class="Profile">
     <h1>Profile</h1>
-    <div class="alert alert-success">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+    <div class="alert alert-success">Hello {{username}}, I can identify YOU!</div>
   </div>
 </template>
+
+<script>
+import axios from 'axios'
+
+export default {
+  name: 'Profile',
+  data() {
+    return {
+      username: ''
+    }
+  },
+  mounted() {
+    axios
+      .get('/api/auth/users/me/')
+      .then(response => {
+        this.username = response.data.username
+      })
+      .catch(error => {
+        console.log(error.response.data)
+        this.$store.commit("logout")
+        this.$router.push("/login")
+      })
+  }
+}
+</script>

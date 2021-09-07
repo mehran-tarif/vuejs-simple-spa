@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import axios from 'axios'
 
 export default createStore({
   state: {
@@ -9,31 +10,41 @@ export default createStore({
     onStart(state) {
       let token = localStorage.getItem("token")
       if (token) {
-        state.isAuthenticated = true
-        state.token = token
+        // login
       } else {
-        state.isAuthenticated = false
-        state.token = ''
+        // logout
       }
     },
     login(state, token) {
-      if (token) {
-        state.isAuthenticated = true
-        state.token = token
-        localStorage.setItem("token", token)
-      } else {
-        state.isAuthenticated = false
-        state.token = ''
-        localStorage.removeItem("token")
-      }
+      state.isAuthenticated = true
+      state.token = token
+      localStorage.setItem("token", token)
+      axios.defaults.headers.common['Authorization'] = "Token " + token
     },
     logout(state) {
       state.isAuthenticated = false
       state.token = ''
+      axios.defaults.headers.common['Authorization'] = ""
       localStorage.removeItem("token")
     },
   },
   actions: {
+    onStart (context) {
+      let token = localStorage.getItem("token")
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = "Token " + token
+        axios
+          .get('/api/auth/users/me/')
+          .then(response => {
+            context.commit('login', token)
+          })
+          .catch(error => {
+            context.commit('logout')
+          })
+      } else {
+        context.commit('logout')
+      }
+    }
   },
   modules: {
   }
