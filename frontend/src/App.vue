@@ -17,7 +17,7 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("onStart")
+    // this.$store.dispatch("onStart")
   }
 }
 </script>

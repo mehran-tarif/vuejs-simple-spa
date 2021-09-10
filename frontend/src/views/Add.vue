@@ -1,6 +1,9 @@
 <template>
   <div class="Add">
     <h1 class="text-center mb-5">Home</h1>
+    <div v-if="error" class="alert alert-danger">
+      Something went wrong.
+    </div>
     <form @submit.prevent="doAdd">
       <div class="form-group">
         <label for="TitleInput">Title</label>
@@ -20,18 +23,15 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'Add',
   data() {
-
-    let articles = localStorage.getItem("articles")
-    articles = JSON.parse(articles)
-
     return {
-      articles: articles,
       title: '',
       description: '',
       content: '',
+      error: false,
     }
   },
   methods: {
@@ -42,10 +42,15 @@ export default {
         description: this.description,
         content: this.content,
       }
-      this.articles.push(article)
-      let database = JSON.stringify(this.articles)
-      localStorage.setItem('articles', database)
-      this.$router.push(`/article/${article.slug}`)
+
+      axios
+        .post('/article/', article)
+        .then(response => {
+          this.$router.push(`/article/${article.slug}`)
+        })
+        .catch(error => {
+          this.error = true
+        })
     }
   }
 }

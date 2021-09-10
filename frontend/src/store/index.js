@@ -7,14 +7,6 @@ export default createStore({
     token: ''
   },
   mutations: {
-    onStart(state) {
-      let token = localStorage.getItem("token")
-      if (token) {
-        // login
-      } else {
-        // logout
-      }
-    },
     login(state, token) {
       state.isAuthenticated = true
       state.token = token
